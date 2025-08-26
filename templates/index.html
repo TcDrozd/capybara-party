@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capybara Party - Daily Zen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            margin-bottom: 2rem;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+
+        .date {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .image-container {
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .capybara-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .capybara-image:hover {
+            transform: scale(1.02);
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .quote-container {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .quote {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            font-style: italic;
+            color: #444;
+            margin-bottom: 0.5rem;
+        }
+
+        .quote-author {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .controls {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            color: #667eea;
+            font-style: italic;
+            margin-top: 1rem;
+        }
+
+        .status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-online { background-color: #4CAF50; }
+        .status-offline { background-color: #f44336; }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .title {
+                font-size: 2rem;
+            }
+
+            .quote {
+                font-size: 1.1rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 200px;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in">
+        <div class="header">
+            <h1 class="title">🦫 Capybara Party</h1>
+            <p class="subtitle">Daily doses of zen and cuteness</p>
+            <p class="date">{{ content.date }}</p>
+        </div>
+
+        <div class="image-container">
+            {% if content.image_filename %}
+                <img src="{{ url_for('static', filename='images/daily/' + content.image_filename) }}" 
+                     alt="Daily Capybara" 
+                     class="capybara-image"
+                     id="capybara-image">
+            {% else %}
+                <div class="image-placeholder">
+                    🦫<br>Capybara incoming...
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="quote-container">
+            <p class="quote" id="daily-quote">"{{ content.quote }}"</p>
+            <p class="quote-author">— Daily Capybara Wisdom</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="refreshContent()" id="refresh-btn">
+                🔄 Generate New
+            </button>
+            <button class="btn" onclick="shareContent()">
+                📱 Share
+            </button>
+        </div>
+
+        <div class="loading" id="loading">
+            🦫 Capybaras are working hard to create something beautiful...
+        </div>
+    </div>
+
+    <div class="status" id="status">
+        <span class="status-dot status-online"></span>
+        All systems zen
+    </div>
+
+    <script>
+        let isGenerating = false;
+
+        async function refreshContent() {
+            if (isGenerating) return;
+            
+            const btn = document.getElementById('refresh-btn');
+            const loading = document.getElementById('loading');
+            const image = document.getElementById('capybara-image');
+            const quote = document.getElementById('daily-quote');
+            
+            isGenerating = true;
+            btn.disabled = true;
+            btn.textContent = '🔄 Generating...';
+            loading.style.display = 'block';
+            
+            try {
+                const response = await fetch('/api/refresh');
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Update quote
+                    quote.textContent = `"${data.quote}"`;
+                    
+                    // Update image if generated successfully
+                    if (data.image_filename) {
+                        // Add cache buster
+                        const imageUrl = `/static/images/daily/${data.image_filename}?t=${Date.now()}`;
+                        
+                        // Create new image element to preload
+                        const newImg = new Image();
+                        newImg.onload = function() {
+                            image.src = imageUrl;
+                            image.classList.add('fade-in');
+                        };
+                        newImg.src = imageUrl;
+                    }
+                    
+                    // Show success message briefly
+                    loading.innerHTML = '✨ New capybara wisdom generated!';
+                    setTimeout(() => {
+                        loading.style.display = 'none';
+                    }, 2000);
+                    
+                } else {
+                    throw new Error('Failed to refresh content');
+                }
+            } catch (error) {
+                loading.innerHTML = '😔 Oops! The capybaras need a moment...';
+                console.error('Refresh failed:', error);
+            } finally {
+                isGenerating = false;
+                btn.disabled = false;
+                btn.textContent = '🔄 Generate New';
+                
+                setTimeout(() => {
+                    loading.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        function shareContent() {
+            const quote = document.getElementById('daily-quote').textContent;
+            const url = window.location.href;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Capybara Party - Daily Zen',
+                    text: quote,
+                    url: url
+                });
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(`${quote} - ${url}`).then(() => {
+                    alert('Copied to clipboard! 📋');
+                }).catch(() => {
+                    alert('Visit: ' + url);
+                });
+            }
+        }
+
+        // Check system status periodically
+        async function checkStatus() {
+            try {
+                const response = await fetch('/api/status');
+                if (response.ok) {
+                    const data = await response.json();
+                    const statusEl = document.getElementById('status');
+                    const allOnline = data.a1111 && data.ollama && data.flask;
+                    
+                    if (allOnline) {
+                        statusEl.innerHTML = '<span class="status-dot status-online"></span>All systems zen';
+                    } else {
+                        statusEl.innerHTML = '<span class="status-dot status-offline"></span>Some capybaras are napping';
+                    }
+                }
+            } catch (error) {
+                console.error('Status check failed:', error);
+            }
+        }
+
+        // Check status every 30 seconds
+        setInterval(checkStatus, 30000);
+        checkStatus();
+
+        // Add some interactive elements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click effect to image
+            const image = document.getElementById('capybara-image');
+            if (image) {
+                image.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 150);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
