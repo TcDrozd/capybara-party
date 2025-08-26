@@ -14,7 +14,7 @@ app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'capybara-secret')
 # Configuration
 A1111_API_URL = os.environ.get('A1111_API_URL', 'http://localhost:7860')
 OLLAMA_API_URL = os.environ.get('OLLAMA_API_URL', 'http://localhost:11434')
-OLLAMA_MODEL = os.environ.get('OLLAMA_MODEL', 'llama2:7b')
+OLLAMA_MODEL = os.environ.get('OLLAMA_MODEL', 'deepseek-r1:latest')
 
 # Image storage path
 IMAGES_DIR = os.path.join('static', 'images', 'daily')
