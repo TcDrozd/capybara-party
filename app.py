@@ -40,7 +40,27 @@ def capybara_prompts():
         "capybara and bird friends having a picnic, wholesome, bright colors, illustration",
         "capybara floating on a lily pad in a peaceful pond, dreamy, soft lighting",
         "capybara reading a book under a tree, cozy atmosphere, golden hour",
-        "capybara with a gentle smile surrounded by butterflies, magical realism"
+        "capybara with a gentle smile surrounded by butterflies, magical realism",
+        "capybara astronaut floating in space with stars and planets in the background, whimsical digital art",
+        "majestic capybara standing on a mossy rock with waterfalls behind it, fantasy art, glowing atmosphere",
+        "tiny capybara sipping tea at a wooden table, cozy cottagecore illustration",
+        "capybara riding a bicycle through a sunflower field, pastel colors, cheerful vibes",
+        "steampunk capybara with goggles and gears, Victorian aesthetic, intricate details",
+        "capybara swimming underwater with koi fish, dreamy watercolor",
+        "capybara knight in shining armor, medieval fantasy illustration, heroic pose",
+        "capybara lying in a hammock between two palm trees, tropical paradise, soft pastel sunset",
+        "capybara in a wizard hat casting spells, glowing runes, magical realism",
+        "capybara surfing a big wave, energetic, bright and colorful comic art",
+        "capybara chef in a tiny kitchen making pancakes, warm colors, detailed illustration",
+        "capybara and penguin friends building a snowman, winter wonderland, playful style",
+        "capybara adventurer with backpack exploring ancient ruins, cinematic lighting",
+        "capybara DJ mixing records at a party, neon lights, vaporwave aesthetic",
+        "capybara napping on a bookshelf surrounded by stacks of books, cozy reading nook",
+        "cyberpunk capybara with neon highlights, futuristic city background, glowing reflections",
+        "capybara in a meadow full of fireflies at twilight, magical glow, soft colors",
+        "capybara and turtle sharing an umbrella in the rain, gentle watercolor style",
+        "capybara samurai under a red maple tree, Japanese ink painting",
+        "capybara sailing on a paper boat down a quiet river, dreamlike atmosphere"
     ]
     import random
     return random.choice(prompts)
@@ -91,8 +111,7 @@ def generate_image():
 def generate_quote():
     """Generate inspirational quote using Ollama"""
     try:
-        prompt = """Generate a short, zen-like inspirational quote about living peacefully and contentedly, inspired by the calm nature of capybaras. The quote should be 1-2 sentences and focus on themes like: mindfulness, peace, contentment, living in the moment, or simple joys. Don't mention capybaras directly."""
-        
+        prompt = """Generate a short, zen-like inspirational quote (1–2 sentences) that feels like it could be spoken by a calm, gentle creature. The tone should be simple, warm, and poetic — evoking stillness, quiet joy, or harmony with nature. Focus on themes like: mindfulness, peace, contentment, small joys, flowing with life, and being unhurried. Avoid clichés, avoid sounding like a fortune cookie, and do not mention specific animals. Instead, let the words feel earthy, grounded, and timeless — something a wise but humble being might say while resting near water."""        
         payload = {
             "model": OLLAMA_MODEL,
             "prompt": prompt,
