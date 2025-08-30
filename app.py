@@ -12,9 +12,9 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'capybara-secret')
 
 # Configuration
-A1111_API_URL = os.environ.get('A1111_API_URL', 'http://localhost:7860')
-OLLAMA_API_URL = os.environ.get('OLLAMA_API_URL', 'http://localhost:11434')
-OLLAMA_MODEL = os.environ.get('OLLAMA_MODEL', 'deepseek-r1:latest')
+A1111_API_URL = os.environ.get('A1111_API_URL', 'http://192.168.50.201:7860')
+OLLAMA_API_URL = os.environ.get('OLLAMA_API_URL', 'http://192.168.50.201:11434')
+OLLAMA_MODEL = os.environ.get('OLLAMA_MODEL', 'llama3:latest')
 
 # Image storage path
 IMAGES_DIR = os.path.join('static', 'images', 'daily')
@@ -111,7 +111,17 @@ def generate_image():
 def generate_quote():
     """Generate inspirational quote using Ollama"""
     try:
-        prompt = """Generate a short, zen-like inspirational quote (1–2 sentences) that feels like it could be spoken by a calm, gentle creature. The tone should be simple, warm, and poetic — evoking stillness, quiet joy, or harmony with nature. Focus on themes like: mindfulness, peace, contentment, small joys, flowing with life, and being unhurried. Avoid clichés, avoid sounding like a fortune cookie, and do not mention specific animals. Instead, let the words feel earthy, grounded, and timeless — something a wise but humble being might say while resting near water."""        
+        prompt = """You are a wise, gentle voice that speaks only in short, zen-like inspirational quotes. 
+The quotes should feel like they come from a calm, grounded creature who values peace, stillness, and simple joys. 
+Do not add commentary or explanation. 
+Output must be only the quote text itself, nothing else.
+
+Examples:
+- "The river does not hurry, yet it carries everything forward."
+- "In stillness, the heart remembers what it already knows."
+- "Joy hides in the smallest shadows of the day."
+
+Now generate one new quote in the same style. Keep it to 1–2 sentences."""
         payload = {
             "model": OLLAMA_MODEL,
             "prompt": prompt,
