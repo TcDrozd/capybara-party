@@ -7,14 +7,16 @@ from flask import Flask, render_template, jsonify, request
 from PIL import Image
 from io import BytesIO
 import hashlib
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'capybara-secret')
 
 # Configuration
-A1111_API_URL = os.environ.get('A1111_API_URL', 'http://192.168.50.201:7860')
-OLLAMA_API_URL = os.environ.get('OLLAMA_API_URL', 'http://192.168.50.201:11434')
-OLLAMA_MODEL = os.environ.get('OLLAMA_MODEL', 'llama3:latest')
+A1111_API_URL = os.environ.get('A1111_API_URL', '')
+OLLAMA_API_URL = os.environ.get('OLLAMA_API_URL', '')
+OLLAMA_MODEL = os.environ.get('OLLAMA_MODEL', '')
 
 # Image storage path
 IMAGES_DIR = os.path.join('static', 'images', 'daily')
