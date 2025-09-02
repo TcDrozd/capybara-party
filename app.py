@@ -123,7 +123,7 @@ Examples:
 - "In stillness, the heart remembers what it already knows."
 - "Joy hides in the smallest shadows of the day."
 
-Now generate one new quote in the same style. Keep it to 1–2 sentences."""
+Now generate one new quote in the same style. Keep it to 1???2 sentences."""
         payload = {
             "model": OLLAMA_MODEL,
             "prompt": prompt,
@@ -200,7 +200,7 @@ def home():
     content = get_or_create_daily_content()
     return render_template('index.html', content=content)
 
-@app.route('/api/refresh')
+@app.route('/api/refresh', methods=['GET', 'POST'])
 def refresh():
     """Force refresh today's content"""
     # Delete existing files for today

@@ -166,5 +166,40 @@ inside the card on phones */ @media (max-width:
 480px){
   .capybara-image{
     border-radius: 12px;
-  }
+  } } /* Make the paint area truly full-height on 
+mobile */ html, body{
+  background-color: hsl(222 47% 6%);  /* prevents 
+white rubber-band */
+  min-height: 100vh;  /* fallback */ min-height: 
+  100dvh;  /* dynamic viewport */
+} @supports (height: 100svh){
+  html, body{ min-height: 100svh; } /* newer iOS */ } 
+/* Tighten top/bottom card spacing, respect safe 
+areas */ .container{
+  margin:
+    max(8px, calc(var(--inset-top) + 2px)) max(12px, 
+    calc(var(--inset-right))) max(8px, 
+    calc(var(--inset-bottom) + 2px)) max(12px, 
+    calc(var(--inset-left)));
+} /* Optional: slightly bigger card on tall phones */ 
+@media (max-width: 600px) and (min-height: 750px){
+  .container{ width: min(760px, 96vw); } } /* Glassy 
+quote card */ .quote-container{
+  background: linear-gradient(180deg,
+    hsl(246 82% 65% / .12), hsl(220 30% 20% / .14));
+  border: 1px solid hsl(220 20% 98% / .10); 
+  box-shadow:
+    inset 0 1px 0 hsl(0 0% 100% / .06), 0 8px 24px 
+    rgba(0,0,0,.35);
+  backdrop-filter: blur(10px) saturate(110%); 
+  -webkit-backdrop-filter: blur(10px) saturate(110%); 
+  /* iOS */
+} /* Little edge highlight on the image for polished 
+glass feel */ .capybara-image{
+  position: relative; box-shadow: 0 10px 32px 
+  rgba(0,0,0,.45);
+} /* optional soft inner glow frame */ 
+.capybara-image{
+  outline: 1px solid hsl(220 20% 98% / .10); 
+  outline-offset: -1px;
 }
