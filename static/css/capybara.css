@@ -127,3 +127,44 @@ fadeIn{
   .btn{ width: 200px; } .image-placeholder{ height: 
   320px; }
 } 
+
+/* --- Mobile-friendly viewport + safe areas --- */ 
+:root{
+  /* iOS safe area insets (0 on non-notch devices) */ 
+  --inset-top: env(safe-area-inset-top, 0px); 
+  --inset-bottom: env(safe-area-inset-bottom, 0px); 
+  --inset-left: env(safe-area-inset-left, 0px); 
+  --inset-right: env(safe-area-inset-right, 0px);
+} /* Fill the screen without weird vh gaps from 
+browser chrome */ html, body{
+  height: auto; min-height: 100vh;  /* fallback */ 
+  min-height: 100dvh;  /* modern browsers (accounts 
+  for dynamic bars) */
+} /* Remove global body padding so the background 
+goes edge-to-edge */ body{
+  padding: 0; } /* Give the card its own margin, 
+respecting notches/home-indicator */ .container{
+  margin:
+    max(12px, var(--inset-top)) max(12px, 
+    var(--inset-right)) max(12px, 
+    var(--inset-bottom)) max(12px, 
+    var(--inset-left));
+} /* Keep the status pill above the home indicator on 
+iOS */ .status{
+  right: max(12px, var(--inset-right)); bottom: 
+  max(12px, var(--inset-bottom));
+} /* Mobile polish */ @media (max-width: 600px){
+  .container{
+    border-radius: 14px; width: min(720px, 94vw); 
+    padding: 1.1rem;  /* slightly tighter on small 
+    screens */
+  } .image-container{ margin: 1.1rem 0 1.2rem; } 
+  .image-placeholder{ height: 320px; } .title{ 
+  font-size: 1.6rem; } .quote{ font-size: 1.05rem; }
+} /* Optional: make the image feel more full-bleed 
+inside the card on phones */ @media (max-width: 
+480px){
+  .capybara-image{
+    border-radius: 12px;
+  }
+}

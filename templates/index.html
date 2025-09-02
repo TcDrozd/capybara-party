@@ -1,148 +1,137 @@
 <!DOCTYPE html> <html lang="en"> <head>
-    <meta charset="UTF-8"> <meta name="viewport" 
-    content="width=device-width, initial-scale=1.0"> 
-    <title>Capybara Party - Daily Zen</title> <link 
-    rel="stylesheet" href="{{ url_for('static', 
-    filename='css/capybara.css') }}">
+  <meta charset="UTF-8" /> <meta name="viewport" 
+  content="width=device-width, initial-scale=1" /> 
+  <title>Capybara Party - Daily Zen</title> <link 
+  rel="stylesheet" href="{{ url_for('static', 
+  filename='css/capybara.css') }}">
 </head> <body>
-    <div class="container fade-in">
-        <div class="header">
-            <h1 class="title"> Capybara Party</h1> <p 
-            class="subtitle">Daily doses of zen and 
-            cuteness</p> <p class="date">{{ 
-            content.date }}</p>
-        </div> <div class="image-container">
-            {% if content.image_filename %}
-                <img src="{{ url_for('static', 
-filename='images/daily/' + content.image_filename) 
+  <div class="container fade-in">
+    <div class="header">
+      <h1 class="title"> Capybara Party</h1> <p 
+      class="subtitle">Daily doses of zen and 
+      cuteness</p> <p class="date">{{ content.date 
+      }}</p>
+    </div> <div class="image-container">
+      {% if content.image_filename %}
+        <img
+          src="{{ url_for('static', 
+filename='images/daily/' ~ content.image_filename) 
 }}"
-                     alt="Daily Capybara" 
-                     class="capybara-image" 
-                     id="capybara-image">
-            {% else %}
-                <div class="image-placeholder">
-                    <br>Capybara incoming...
-                </div>
-            {% endif %}
-        </div> <div class="quote-container">
-            <p class="quote" id="daily-quote">"{{ 
+          alt="Daily Capybara" class="capybara-image" 
+          id="capybara-image"
+        >
+      {% else %}
+        <div class="image-placeholder"><br>Capybara 
+incoming...</div>
+      {% endif %}
+    </div> <div class="quote-container">
+      <p class="quote" id="daily-quote">"{{ 
 content.quote }}"</p>
-            <p class="quote-author"> Daily Capybara 
+      <p class="quote-author"> Daily Capybara 
 Wisdom</p>
-        </div> <div class="controls">
-            <button class="btn" 
-onclick="refreshContent()" id="refresh-btn">
-                 Generate New
-            </button> <button class="btn" 
-            onclick="shareContent()">
-                 Share
-            </button>
-        </div> <div class="loading" id="loading">
-             Capybaras are working hard to create 
-something beautiful...
-        </div>
-    </div> <div class="status" id="status">
-        <span class="status-dot 
-status-online"></span>
-        All systems zen
-    </div> <script>
-        let isGenerating = false; async function 
-        refreshContent() {
-            if (isGenerating) return;
-
-            const btn = 
-document.getElementById('refresh-btn');
-            const loading = 
-document.getElementById('loading');
-            const image = 
-document.getElementById('capybara-image');
-            const quote = 
-document.getElementById('daily-quote');
-            
-isGenerating = true;ue;ating...'; lay = 'block';
-            
-try {esponse = await 
-fetch('/api/refresh');esponse.ok) {esponse.json(); 
-date quote
-                    quote.textContent = 
-`"${data.quote}"`;
-                    
-// Update image if generated successfullyl = 
-`/static/images/daily/${data.image_filename}?t=${Date.now()}`;eate 
-new image element to preloadc = imageUrl;c = 
-imageUrl;ieflyHTML = ' New capybara wisdom 
-generated!'; lay = 'none';
-                    }, 2000);
-
-                } else {
-                    throw new Error('Failed to 
-refresh content');
-                }
-            } catch (error) {
-                loading.innerHTML = ' Oops! The 
-capybaras need a moment...';
-                console.error('Refresh failed:', 
-error);
-            } finally {
-                isGenerating = false; btn.disabled = 
-                false; btn.textContent = ' Generate 
-                New';
-
-                setTimeout(() => {
-                    loading.style.display = 'none';
-                }, 3000);
-            }
-        } function shareContent() {
-            const quote = 
-document.getElementById('daily-quote').textContent;
-            const url = window.location.href;
-
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Capybara Party - Daily 
-Zen',
-                    text: quote, url: url
-                });
-            } else {
-                // Fallback: copy to clipboard 
-                navigator.clipboard.writeText(`${quote} 
-                - ${url}`).then(() => {
-                    alert('Copied to clipboard! ');
-                }).catch(() => {
-                    alert('Visit: ' + url);
-                });
-            }
-        } // Check system status periodically async 
-        function checkStatus() {
-            try {
-                const response = await 
-fetch('/api/status');
-                if (response.ok) {
-                    const data = await 
-response.json();
-                    const statusEl = 
-document.getElementById('status');
-                    const allOnline = data.a1111 && 
-data.ollama && data.flask;
-                    
-if (allOnline) {HTML = '<span class="status-dot 
-status-online"></span>All systems zen';HTML = '<span 
-class="status-dot status-offline"></span>Some 
-capybaras are napping';ror) {ror('Status check 
-failed:', error);y 30 secondsval(checkStatus, 
-30000);active elements('DOMContentLoaded', function() 
-{ ybara-image');
-            if (image) {
-                image.addEventListener('click', 
-function() {
-                    this.style.transform = 
-'scale(0.95)';
-                    setTimeout(() => {
-                        this.style.transform = 
-'scale(1)';
-                    }, 150);
-                });
-            }
+    </div> <div class="controls">
+      <button class="btn" id="refresh-btn" 
+type="button"> Generate New</button>
+      <button class="btn btn--alt" id="share-btn" 
+type="button"> Share</button>
+    </div> <div class="loading" id="loading" 
+    style="display:none;">
+       Capybaras are working hard to create something 
+beautiful...
+    </div>
+  </div> <div class="status" id="status">
+    <span class="status-dot status-online"></span> 
+    All systems zen
+  </div> <script>
+    let isGenerating = false; async function 
+    refreshContent() {
+      if (isGenerating) return; const btn = 
+      document.getElementById('refresh-btn'); const 
+      loading = document.getElementById('loading'); 
+      const image = 
+      document.getElementById('capybara-image'); 
+      const quote = 
+      document.getElementById('daily-quote'); 
+      isGenerating = true; btn.disabled = true; 
+      btn.textContent = ' Generating...'; 
+      loading.style.display = 'block'; 
+      loading.textContent = ' Capybaras are working 
+      hard to create something beautiful...'; try {
+        const response = await fetch('/api/refresh', 
+{
+          method: 'POST', headers: { 'Content-Type': 
+          'application/json' }, cache: 'no-store'
+        }); if (!response.ok) throw new Error('Failed 
+        to refresh content'); const data = await 
+        response.json(); if (data.quote && quote) {
+          quote.textContent = `"${data.quote}"`;
+        } if (data.image_filename && image) {
+          const imageUrl = 
+`/static/images/daily/${data.image_filename}?t=${Date.now()}`;
+          const newImg = new Image(); newImg.onload = 
+          function () {
+            image.src = imageUrl; 
+            image.classList.add('fade-in'); 
+            setTimeout(() => 
+            image.classList.remove('fade-in'), 400);
+          }; newImg.src = imageUrl;
+        } loading.textContent = ' New capybara wisdom 
+        generated!'; setTimeout(() => 
+        (loading.style.display = 'none'), 2000);
+      } catch (err) {
+        console.error('Refresh failed:', err); 
+        loading.textContent = ' Oops! The capybaras 
+        need a moment...';
+      } finally {
+        isGenerating = false; btn.disabled = false; 
+        btn.textContent = ' Generate New'; 
+        setTimeout(() => (loading.style.display = 
+        'none'), 3000);
+      }
+    } function shareContent() {
+      const quote = 
+document.getElementById('daily-quote')?.textContent 
+|| '';
+      const url = window.location.href; if 
+      (navigator.share) {
+        navigator.share({ title: 'Capybara Party - 
+Daily Zen', text: quote, url });
+      } else {
+        navigator.clipboard.writeText(`${quote} - 
+${url}`)
+          .then(() => alert('Copied to clipboard! ')) 
+          .catch(() => alert('Visit: ' + url));
+      }
+    } async function checkStatus() {
+      try {
+        const response = await fetch('/api/status', { 
+cache: 'no-store' });
+        if (!response.ok) return; const data = await 
+        response.json(); const statusEl = 
+        document.getElementById('status'); const 
+        allOnline = data.a1111 && data.ollama && 
+        data.flask; statusEl.innerHTML = allOnline
+          ? '<span class="status-dot 
+status-online"></span>All systems zen'
+          : '<span class="status-dot 
+status-offline"></span>Some capybaras are napping';
+      } catch (_) {}
+    } document.addEventListener('DOMContentLoaded', 
+    () => {
+      // Bind events (no inline onclick) 
+      document.getElementById('refresh-btn')?.addEventListener('click', 
+      refreshContent); 
+      document.getElementById('share-btn')?.addEventListener('click', 
+      shareContent); // Image tap effect const image 
+      = document.getElementById('capybara-image'); if 
+      (image) {
+        image.addEventListener('click', function () {
+          this.style.transform = 'scale(0.95)'; 
+          setTimeout(() => (this.style.transform = 
+          'scale(1)'), 150);
         });
-    </script> </body>
+      } // Status polling checkStatus(); 
+      setInterval(checkStatus, 30000);
+    });
+  </script> </body>
 </html>
