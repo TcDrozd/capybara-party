@@ -7,14 +7,18 @@ from flask import Flask, render_template, jsonify, request
 from PIL import Image
 from io import BytesIO
 import hashlib
+
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
+
+# AFTER loading .env, import sd_bootstrap to ensure SD is running when needed
+from sd_bootstrap import ensure_sd
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'capybara-secret')
 
 # Configuration
-A1111_API_URL = os.environ.get('A1111_API_URL', '')
+A1111_API_URL = os.environ.get('A1111_API_URL', 'http://127.0.0.1:7860')
 OLLAMA_API_URL = os.environ.get('OLLAMA_API_URL', '')
 OLLAMA_MODEL = os.environ.get('OLLAMA_MODEL', '')
 
@@ -69,6 +73,14 @@ def capybara_prompts():
 
 def generate_image():
     """Generate image using AUTOMATIC1111 API"""
+    # Ensure A1111 is up before we call it
+    try:
+        from sd_bootstrap import ensure_sd
+        ensure_sd()
+    except Exception as e:
+        print(f"SD bootstrap failed: {e}")
+        return None, None
+
     try:
         prompt = capybara_prompts()
         
@@ -123,7 +135,7 @@ Examples:
 - "In stillness, the heart remembers what it already knows."
 - "Joy hides in the smallest shadows of the day."
 
-Now generate one new quote in the same style. Keep it to 1???2 sentences."""
+Now generate one new quote in the same style. Keep it to 1–2 sentences."""
         payload = {
             "model": OLLAMA_MODEL,
             "prompt": prompt,
@@ -218,6 +230,19 @@ def refresh():
     # Generate new content
     content = get_or_create_daily_content()
     return jsonify(content)
+
+@app.route("/generate", methods=["POST"])
+def generate():
+    started_now = ensure_sd()
+    if started_now:
+        # optional UX handoff
+        return render_template("waking.html", next_url="/generate/continue", payload=request.form.to_dict())
+    return get_or_create_daily_content()
+
+@app.route("/generate/continue", methods=["GET","POST"])
+def generate_continue():
+    # Any posted values are ignored for now; generation is fully automatic
+    return get_or_create_daily_content()
 
 @app.route('/api/status')
 def status():

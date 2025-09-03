@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Waking the capybaras…</title>
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}
+.card{padding:2rem 2.5rem;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.1);text-align:center}
+.spinner{width:48px;height:48px;border-radius:50%;border:5px solid #ddd;border-top-color:#000;animation:spin 1s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sub{opacity:.7}
+</style></head><body>
+<div class="card">
+  <div class="spinner"></div>
+  <h1>Waking the capybaras…</h1>
+  <p class="sub">Starting the image engine. This usually takes under a minute.</p>
+  <form id="handoff" action="{{ next_url }}" method="post">
+    {% for k,v in payload.items() %}<input type="hidden" name="{{k}}" value="{{v|e}}">{% endfor %}
+  </form>
+</div>
+<script>addEventListener('load',()=>document.getElementById('handoff').submit());</script>
+</body></html>
