@@ -3,7 +3,7 @@ import requests
 import json
 import base64
 from datetime import datetime, timedelta
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, redirect, url_for
 from PIL import Image
 from io import BytesIO
 import hashlib
@@ -233,11 +233,13 @@ def refresh():
 
 @app.route("/generate", methods=["POST"])
 def generate():
-    started_now = ensure_sd()
-    if started_now:
-        # optional UX handoff
-        return render_template("waking.html", next_url="/generate/continue", payload=request.form.to_dict())
-    return get_or_create_daily_content()
+    # Ensure SD is up; then do the work
+    try:
+        started_now = ensure_sd()
+    except Exception as e:
+        print(f"SD bootstrap failed: {e}")
+    _ = get_or_create_daily_content()
+    return redirect(url_for('home'))
 
 @app.route("/generate/continue", methods=["GET","POST"])
 def generate_continue():
