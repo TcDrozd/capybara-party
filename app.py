@@ -7,6 +7,7 @@ from flask import Flask, render_template, jsonify, request, redirect, url_for
 from PIL import Image
 from io import BytesIO
 import hashlib
+from auth import requires_auth
 
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
@@ -232,6 +233,7 @@ def refresh():
     return jsonify(content)
 
 @app.route("/generate", methods=["POST"])
+@requires_auth # adding basic auth for generation endpoint
 def generate():
     # Ensure SD is up; then do the work
     try:
