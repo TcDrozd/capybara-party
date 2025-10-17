@@ -193,43 +193,71 @@ body {
   flex-wrap: wrap;
 }
 
-.btn {
-  --btn-top: hsl(246 82% 66%);
-  --btn-bot: hsl(246 82% 58%);
-  background: linear-gradient(180deg, var(--btn-top), var(--btn-bot));
-  color: #fff;
-  border: 1px solid hsl(246 82% 40% / .65);
-  padding: .72rem 1.2rem;
-  border-radius: 12px;
-  font-size: .98rem;
-  font-weight: 600;
-  letter-spacing: .2px;
-  cursor: pointer;
-  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
-  box-shadow: 0 6px 18px hsl(246 82% 40% / .35);
-}
+  .btn {
+    background: hsl(222 30% 16%) !important;
+    background-image: none !important; /* kill any leftover gradients */
+    color: var(--text);
+    border: 1px solid hsl(220 20% 98% / .12);
+    padding: .72rem 1.2rem;
+    border-radius: 12px;
+    font-size: .98rem;
+    font-weight: 600;
+    letter-spacing: .2px;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease, opacity .15s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,.18);
+    backdrop-filter: blur(0.5px);
+    -webkit-backdrop-filter: blur(0.5px);
+    -webkit-appearance: none;
+    appearance: none;
+    text-shadow: none;
+  }
+  .btn:hover {
+    transform: translateY(-1px);
+    background: hsl(222 28% 18%) !important;
+    background-image: none !important;
+    box-shadow: 0 6px 14px rgba(0,0,0,.22);
+  }
+  .btn:active {
+    transform: translateY(0);
+    background: hsl(222 28% 15%) !important;
+    background-image: none !important;
+    box-shadow: 0 3px 8px rgba(0,0,0,.18);
+  }
+  .btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--accent-ring);
+  }
+  .btn:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
 
-.btn:hover { transform: translateY(-1px); filter: brightness(1.02); }
-.btn:active { transform: translateY(0);   filter: brightness(.98);  }
-
-.btn:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--accent-ring);
-}
-
-.btn:disabled {
-  opacity: .6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* subtle secondary variant if you add .btn--alt alongside .btn */
-.btn.btn--alt {
-  --btn-top: hsl(186 72% 56%);
-  --btn-bot: hsl(186 72% 48%);
-  border-color: hsl(186 72% 36% / .65);
-  box-shadow: 0 6px 18px hsl(186 72% 32% / .35);
-}
+  .btn.btn--alt {
+    background: hsl(222 30% 16%) !important;
+    color: var(--text-dim);
+    border: 1px solid hsl(220 20% 98% / .18);
+    box-shadow: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: none !important;
+    text-shadow: none;
+  }
+  .btn.btn--alt:hover {
+    background: hsl(220 20% 98% / .06);
+    color: var(--text);
+    transform: translateY(-1px);
+  }
+  .btn.btn--alt:active {
+    background: hsl(220 20% 98% / .10);
+    transform: translateY(0);
+  }
+  .btn.btn--alt:focus-visible {
+    box-shadow: 0 0 0 3px var(--accent-ring);
+    outline: none;
+  }
 
 /* ================================
    Inline Loading Message (optional)

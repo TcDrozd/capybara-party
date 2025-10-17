@@ -37,6 +37,39 @@ def get_daily_json_filename():
     today = datetime.now().strftime('%Y-%m-%d')
     return f"daily_{today}.json"
 
+def get_daily_counter_filename():
+    """Per-day counter filename like count_2025-10-17.txt"""
+    today = datetime.now().strftime('%Y-%m-%d')
+    return f"count_{today}.txt"
+
+def read_daily_counter():
+    """Return today's generation count (int)"""
+    counter_path = os.path.join(IMAGES_DIR, get_daily_counter_filename())
+    try:
+        if os.path.exists(counter_path):
+            with open(counter_path, 'r') as f:
+                raw = f.read().strip()
+                return int(raw) if raw else 0
+    except:
+        pass
+    return 0
+
+def increment_daily_counter():
+    """Atomically bump today's count"""
+    counter_path = os.path.join(IMAGES_DIR, get_daily_counter_filename())
+    try:
+        current = 0
+        if os.path.exists(counter_path):
+            with open(counter_path, 'r') as f:
+                raw = f.read().strip()
+                current = int(raw) if raw else 0
+        with open(counter_path, 'w') as f:
+            f.write(str(current + 1))
+        return current + 1
+    except:
+        # Fail-safe: don't crash generation if counter write fails
+        return None
+
 def capybara_prompts():
     """Random capybara-themed prompts"""
     prompts = [
@@ -126,17 +159,18 @@ def generate_image():
 def generate_quote():
     """Generate inspirational quote using Ollama"""
     try:
-        prompt = """You are a wise, gentle voice that speaks only in short, zen-like inspirational quotes. 
-The quotes should feel like they come from a calm, grounded creature who values peace, stillness, and simple joys. 
-Do not add commentary or explanation. 
-Output must be only the quote text itself, nothing else.
+        prompt = """You are the voice of a wise capybara, a creature deeply content with the world. You speak only in short, zen-like quotes that reflect your philosophy.
 
-Examples:
-- "The river does not hurry, yet it carries everything forward."
-- "In stillness, the heart remembers what it already knows."
-- "Joy hides in the smallest shadows of the day."
+Your philosophy is built on:
 
-Now generate one new quote in the same style. Keep it to 1–2 sentences."""
+Moving at Nature's Pace. There is no need to rush.
+Finding Joy in Simple Things. A warm rock, cool water, company.
+Accepting What Is. The sun rises, the rain falls. All is part of the whole.
+Growing Gently. True strength is built in quiet consistency.
+Observing Deeply. The world speaks to those who watch and listen.
+Do not add commentary. Output only the quote text itself.
+
+Now, share a piece of your wisdom. Keep it to 1–2 sentences."""
         payload = {
             "model": OLLAMA_MODEL,
             "prompt": prompt,
@@ -173,10 +207,13 @@ def get_or_create_daily_content():
     json_filename = get_daily_json_filename()
     json_filepath = os.path.join(IMAGES_DIR, json_filename)
     
-    # Check if today's content already exists
+    # If today's content exists, just return it (and attach the live counter value)
     if os.path.exists(json_filepath):
         with open(json_filepath, 'r') as f:
-            return json.load(f)
+            content = json.load(f)
+        # merge in the current counter (so the page always shows the latest number)
+        content["generation_count"] = read_daily_counter()
+        return content
     
     # Generate new content
     print("Generating new daily content...")
@@ -184,27 +221,28 @@ def get_or_create_daily_content():
     quote = generate_quote()
     
     if image_filename:
+        # bump counter since we generated a fresh image
+        count = increment_daily_counter() or 1
         content = {
             "date": datetime.now().strftime('%Y-%m-%d'),
             "image_filename": image_filename,
             "image_prompt": image_prompt,
             "quote": quote,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
+            "generation_count": count
         }
-        
-        # Save to JSON file
         with open(json_filepath, 'w') as f:
             json.dump(content, f, indent=2)
-        
         return content
     else:
-        # Fallback content if generation fails
+        # Fallback (no increment)
         return {
             "date": datetime.now().strftime('%Y-%m-%d'),
             "image_filename": None,
             "image_prompt": None,
             "quote": "Sometimes the most productive thing you can do is relax.",
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
+            "generation_count": read_daily_counter()
         }
 
 @app.route('/')
@@ -268,7 +306,8 @@ def status():
     return jsonify({
         "a1111": a1111_status,
         "ollama": ollama_status,
-        "flask": True
+        "flask": True,
+        "today_generations": read_daily_counter()
     })
 
 if __name__ == '__main__':
