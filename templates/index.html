@@ -4,14 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Capybara Party - Daily Zen</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/capybara.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/capybara.css') }}?v={{ content.timestamp }}">
 </head>
 <body>
   <div class="container fade-in">
     <div class="header">
       <h1 class="title">🦫 Capybara Party</h1>
       <p class="subtitle">Daily doses of zen and cuteness</p>
-      <p class="date">{{ content.date }}</p>
     </div>
 
     <div class="image-container">
@@ -33,7 +32,7 @@
     </div>
 
     <div class="controls">
-      <button class="btn" id="refresh-btn" type="button">🔄 Generate New</button>
+      <button class="btn" id="refresh-btn" type="button" onclick="capyRefresh()">🔄 Generate New</button>
       <button class="btn btn--alt" id="share-btn" type="button">📱 Share</button>
     </div>
 
@@ -49,6 +48,8 @@
         <div class="loading-text">Waking the capybaras…</div>
       </div>
     </div>
+
+  <p class="muted">Images generated today: {{ content.generation_count or 0 }}</p>
 
   <div class="status" id="status">
     <span class="status-dot status-online"></span>

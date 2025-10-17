@@ -1,6 +1,32 @@
 "use strict";
 
+
 let isGenerating = false;
+
+// New: refreshAndReload hard reloads the page after generating new content
+async function refreshAndReload() {
+  if (isGenerating) return;
+  const btn = document.getElementById('refresh-btn');
+  const overlay = document.getElementById('loading-overlay');
+  const loadingText = overlay ? overlay.querySelector('.loading-text') : null;
+
+  isGenerating = true;
+  if (btn) { btn.disabled = true; btn.textContent = '🔄 Generating...'; }
+  if (overlay) { overlay.style.display = 'flex'; if (loadingText) loadingText.textContent = 'Waking the capybaras…'; }
+
+  try {
+    const res = await fetch('/api/refresh', { method: 'POST', headers: { 'Content-Type': 'application/json' }, cache: 'no-store' });
+    if (!res.ok) throw new Error('Failed to refresh content');
+    // Hard reload so the image + counter are always in sync
+    window.location.reload();
+  } catch (e) {
+    console.error('Refresh failed:', e);
+    if (loadingText) loadingText.textContent = '😔 Oops! The capybaras need a moment...';
+    isGenerating = false;
+    if (btn) { btn.disabled = false; btn.textContent = '🔄 Generate New'; }
+    if (overlay) { setTimeout(() => { overlay.style.display = 'none'; }, 1500); }
+  }
+}
 
 async function refreshContent() {
   if (isGenerating) return;
@@ -92,7 +118,7 @@ async function checkStatus() {
 document.addEventListener('DOMContentLoaded', () => {
   console.log('[capybara.js] loaded');
   const refreshBtn = document.getElementById('refresh-btn');
-  if (refreshBtn) refreshBtn.addEventListener('click', refreshContent);
+  if (refreshBtn) refreshBtn.addEventListener('click', refreshAndReload);
   const shareBtn = document.getElementById('share-btn');
   if (shareBtn) shareBtn.addEventListener('click', shareContent);
 
@@ -106,4 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   checkStatus();
   setInterval(checkStatus, 30000);
+
+  // Expose for inline use
+  window.capyRefresh = refreshAndReload;
 });
